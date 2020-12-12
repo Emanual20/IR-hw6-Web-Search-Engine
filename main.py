@@ -3,18 +3,66 @@
 
 import sys
 import nkspider
+import prtest
+import gencontentsvsm
+import genarchorsvsm
+import gentitlesvsm
+import UserMod
 import pickle as pkl
-import lucene
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 ROOT_URL = "https://www.nankai.edu.cn"
 doc_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\doc_id.dict"
 url_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_id.dict"
 url_list_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_list.dict"
-
+id_pagerank_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\id_pagerank.dict"
+CONTENTS_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\contents_vectorizor.dict"
+URLID2VECTOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\urlid_vector.dict"
 
 if __name__ == "__main__":
-    # nkspider.spider(ROOT_URL)
-    # f = open(url_list_DICT_PATH,'rb')
-    # p = pkl.load(f)
-    # print(1,p[1])
-    pass
+    print("Welcome Using Sakura's Search Engine \"NOTHING CAN YOU FOUND\"..!")
+    # gen_pagerank
+    # prtest.gen_pagerank()
+    # fload = open(id_pagerank_DICT_PATH,"rb")
+    # s = pkl.load(fload)
+    # print(s)
+
+    # generate vsm
+    # gencontentsvsm.genvsm()
+    # genarchorsvsm.genvsm()
+    # gentitlesvsm.genvsm()
+
+    # a simple query test
+    # f = open(CONTENTS_TFIDF_VECTORIZOR_PATH,"rb")
+    # tfidf_vectorizer = pkl.load(f)
+    # tfidf_matrix = tfidf_vectorizer.fit_transform(mydoclist)
+    # new_docs = ["你好 我 是 一个 计算机 学生"]
+    # new_term_freq_matrix = tfidf_vectorizer.transform(new_docs)
+    # print(tfidf_vectorizer.vocabulary_)
+    # print(new_term_freq_matrix.todense())
+    # dense = new_term_freq_matrix.todense().tolist()
+    # for i in range(0,len(dense[0])):
+    #     if dense[0][i] > 0 :
+    #         print(i," ",dense[0][i])
+
+    UserMod.InitUserModules()
+    while 1:
+        option = input("please log your account or register a new account: (L/R)")
+        if "l" in option or "L" in option:
+            nickname = input("[LOGIN] please input your username:")
+            password = input("[LOGIN] please input your account's password:")
+            x = UserMod.LoginManager(nickname, password)
+            if x == 1:
+                print("login successful..")
+                break
+            else:
+                print("invalid nickname or password..")
+
+        if "r" in option or "R" in option:
+            nickname = input("[REGISTER] please input your username:")
+            password = input("[REGISTER] please input your account's password:")
+            x = UserMod.RegisterManager(nickname, password)
+            if x == 1:
+                print("register successful..")
+            else:
+                print("invalid nickname or password..")
