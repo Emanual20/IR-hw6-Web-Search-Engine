@@ -8,6 +8,7 @@ import gencontentsvsm
 import genarchorsvsm
 import gentitlesvsm
 import UserMod
+import QueryMod
 import pickle as pkl
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -17,7 +18,8 @@ url_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_o
 url_list_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_list.dict"
 id_pagerank_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\id_pagerank.dict"
 CONTENTS_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\contents_vectorizor.dict"
-URLID2VECTOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\urlid_vector.dict"
+ANCHORS_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\anchors_vectorizor.dict"
+TITLES_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\titles_vectorizor.dict"
 
 if __name__ == "__main__":
     print("Welcome Using Sakura's Search Engine \"NOTHING CAN YOU FOUND\"..!")
@@ -45,24 +47,26 @@ if __name__ == "__main__":
     #     if dense[0][i] > 0 :
     #         print(i," ",dense[0][i])
 
-    UserMod.InitUserModules()
-    while 1:
-        option = input("please log your account or register a new account: (L/R)")
-        if "l" in option or "L" in option:
-            nickname = input("[LOGIN] please input your username:")
-            password = input("[LOGIN] please input your account's password:")
-            x = UserMod.LoginManager(nickname, password)
-            if x == 1:
-                print("login successful..")
-                break
-            else:
-                print("invalid nickname or password..")
-
-        if "r" in option or "R" in option:
-            nickname = input("[REGISTER] please input your username:")
-            password = input("[REGISTER] please input your account's password:")
-            x = UserMod.RegisterManager(nickname, password)
-            if x == 1:
-                print("register successful..")
-            else:
-                print("invalid nickname or password..")
+    # UserMod.InitUserModules()
+    # while 1:
+    #     option = input("please log your account or register a new account: (L/R)")
+    #     if "l" in option or "L" in option:
+    #         nickname = input("[LOGIN] please input your username:")
+    #         password = input("[LOGIN] please input your account's password:")
+    #         x = UserMod.LoginManager(nickname, password)
+    #         if x == 1:
+    #             print("login successful..")
+    #             break
+    #         else:
+    #             print("invalid nickname or password..")
+    #
+    #     if "r" in option or "R" in option:
+    #         nickname = input("[REGISTER] please input your username:")
+    #         password = input("[REGISTER] please input your account's password:")
+    #         x = UserMod.RegisterManager(nickname, password)
+    #         if x == 1:
+    #             print("register successful..")
+    #         else:
+    #             print("invalid nickname or password..")
+    query = input("please input ur query:")
+    QueryMod.doc_query(query)

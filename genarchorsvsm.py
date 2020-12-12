@@ -29,10 +29,11 @@ def genvsm():
 
     tfidf_vectorizer = TfidfVectorizer(min_df=1)
     tfidf_matrix = tfidf_vectorizer.fit_transform(mydoclist)
+    fdense = tfidf_matrix.todense()
 
     # write tfidf_vectorizer & fileidlist into disk
     fovec = open(ANCHORS_TFIDF_VECTORIZOR_PATH, "wb")
-    pkl.dump((tfidf_vectorizer, urlidlist), fovec)
+    pkl.dump((tfidf_vectorizer, urlidlist, fdense), fovec)
     print("write tfidf_vectorizer into disk finish")
 
     # # write urlid2vector dict into disk
