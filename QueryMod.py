@@ -4,6 +4,8 @@ import re
 import numpy as np
 from string import punctuation
 
+DATA_BASEPATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_dir\\"
+DATA_SUFFIX = ".info"
 doc_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\doc_id.dict"
 url_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_id.dict"
 url_list_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_list.dict"
@@ -64,9 +66,54 @@ def url_query(query):
     BUFFER_LIST.sort(key=lambda x: (x[1], x[0]), reverse=True)
 
     print("maybe u wanna search following urls:")
-    for i in range(0,min(len(BUFFER_LIST),MAX_RECOMMEND_NUM)):
+    for i in range(0, min(len(BUFFER_LIST), MAX_RECOMMEND_NUM)):
         print("Rank", i, ": ", URL_ID_DIC[BUFFER_LIST[i][0]], BUFFER_LIST[i][1])
 
 
 def site_query(query):
-    pass
+    MAX_CONTENTS_TIMES = 5000
+    f = open(CONTENTS_TFIDF_VECTORIZOR_PATH, "rb")
+    tfidf_vectorizer, urlidlist, wordslist = pkl.load(f)
+
+    query = re.sub(r"[{}、，。！？·【】）》；;《“”（-]+".format(punctuation), " ", query)
+    query = query.lower()
+    query_words = ' '.join(jieba.lcut_for_search(query))
+    query = []
+    query.append(query_words)
+
+    new_term_freq_matrix = tfidf_vectorizer.transform(query)
+    query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
+
+    idscorepairlist = []
+    round = len(urlidlist)
+
+    # calc all the sites score, must be one site one time, or will run out of memory
+    for i in range(0, round):
+        if i > MAX_CONTENTS_TIMES:
+            break
+
+        try:
+            f = open(DATA_BASEPATH + str(urlidlist[i]) + DATA_SUFFIX, "rb")
+        except FileNotFoundError:
+            continue
+
+        mysitelist = []
+        words = wordslist[i]
+        mysitelist.append(words)
+        now_doc_freq_matrix = tfidf_vectorizer.transform(mysitelist)
+        contents_vec = np.array((now_doc_freq_matrix.todense().tolist())[0])
+
+        score = np.dot(contents_vec, query_vec) / np.linalg.norm(query_vec, ord=2) / np.linalg.norm(contents_vec, ord=2)
+        if score > 0:
+            idscorepairlist.append([urlidlist[i], score])
+        if not (i % 500):
+            print("site:", i, "finish")
+
+    idscorepairlist.sort(key=lambda x: (x[1], x[0]), reverse=True)
+
+    print("maybe u wanna search following sites:")
+    f = open(url_id_DICT_PATH, "rb")
+    url_id_dict = pkl.load(f)
+
+    for i in range(0, min(len(idscorepairlist), MAX_RECOMMEND_NUM)):
+        print("Rank", i, ": ", url_id_dict[idscorepairlist[i][0]], idscorepairlist[i][1])

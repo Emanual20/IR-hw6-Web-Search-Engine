@@ -59,7 +59,7 @@ def QueryLogManager(nickname, query):
     tmp = LOG_DICT[nickname]
     tmp.append(query)
     LOG_DICT[nickname] = tmp
-    print(LOG_DICT)
+    # print(LOG_DICT)
 
     # update user log to disk
     f = open(USER_LOG_PATH, "wb")

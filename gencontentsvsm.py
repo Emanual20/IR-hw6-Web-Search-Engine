@@ -9,6 +9,7 @@ CONTENTS_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\d
 URLID2VECTOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\urlid_vector.dict"
 DATA_SUFFIX = ".info"
 MAX_LOOP_TIMES = 23136
+MAX_CUT_WORDS_NUM = 400
 
 
 def genvsm():
@@ -24,17 +25,19 @@ def genvsm():
 
         content = re.sub(r"[{}、，。！？·【】）》；;《“”（-]+".format(punctuation), "", content)
         content = content.lower()
-        words = ' '.join(jieba.lcut_for_search(content))
+        words = ' '.join(jieba.lcut_for_search(content)[0:MAX_CUT_WORDS_NUM])
         mydoclist.append(words)
         urlidlist.append(i)
-        print("FILE " + str(i) + "'s vector finish..")
+        if not (i % 100):
+            print("FILE " + str(i) + "'s vector finish..")
 
     tfidf_vectorizer = TfidfVectorizer(min_df=1)
     tfidf_matrix = tfidf_vectorizer.fit_transform(mydoclist)
+    print(tfidf_matrix.todense().shape)
 
     # write tfidf_vectorizer & urlidlist into disk
     fovec = open(CONTENTS_TFIDF_VECTORIZOR_PATH, "wb")
-    pkl.dump((tfidf_vectorizer, urlidlist), fovec)
+    pkl.dump((tfidf_vectorizer, urlidlist, mydoclist), fovec)
     print("write tfidf_vectorizer into disk finish")
 
     # # write urlid2vector dict into disk
