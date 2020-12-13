@@ -9,6 +9,7 @@ import genarchorsvsm
 import gentitlesvsm
 import UserMod
 import QueryMod
+import CachedMod
 import pickle as pkl
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -85,13 +86,37 @@ if __name__ == "__main__":
                 continue
             elif '2' in option:
                 query = input("please input ur query:")
-                QueryMod.url_query(query)
+                url_id_list = QueryMod.url_query(query)
                 UserMod.QueryLogManager(NOW_USER_NICKNAME, query)
+                while 1:
+                    cache_opt = input("please input the number of the cache you wanna say:(0-9)")
+                    if 'q' in cache_opt or 'Q' in cache_opt:
+                        break
+                    cache_opt = eval(cache_opt)
+                    if 0 <= cache_opt <= 9:
+                        print("http://localhost:1425")
+                        CachedMod.display(url_id_list[cache_opt])
+                    elif 'q' in cache_opt or 'Q' in cache_opt:
+                        break
+                    else:
+                        print("invalid range..")
+
                 continue
             elif '3' in option:
                 query = input("please input ur query:")
-                QueryMod.site_query(query)
+                url_id_list = QueryMod.site_query(query)
                 UserMod.QueryLogManager(NOW_USER_NICKNAME, query)
+                while 1:
+                    cache_opt = input("please input the number of the cache you wanna say:(0-9/q)")
+                    if 'q' in cache_opt or 'Q' in cache_opt:
+                        break
+                    cache_opt = eval(cache_opt)
+                    if 0 <= cache_opt <= 9:
+                        print("http://localhost:1425")
+                        CachedMod.display(url_id_list[cache_opt])
+                    else:
+                        print("invalid range..")
+
                 continue
             elif '4' in option:
                 display_num = input("please input log's display window size (maximum 20):")

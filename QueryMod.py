@@ -38,7 +38,7 @@ def doc_query(query):
     round = len(docidlist)
     for i in range(0, round):
         doc_vec = np.array(docdenselist[i])
-        score = np.dot(doc_vec, query_vec) / np.linalg.norm(query_vec, ord=2) / np.linalg.norm(doc_vec, ord=2)
+        score = np.dot(doc_vec, query_vec) / (np.linalg.norm(query_vec, ord=2)+1) / (np.linalg.norm(doc_vec, ord=2)+1)
         if score > 0:
             idscorepairlist.append([docidlist[i], score])
 
@@ -52,6 +52,7 @@ def doc_query(query):
         print("Rank", i, ": ", doc_id_list[idscorepairlist[i][0]], idscorepairlist[i][1])
 
 
+# return a urlidlist
 def url_query(query):
     f = open(url_id_DICT_PATH, "rb")
     URL_ID_DIC = pkl.load(f)
@@ -65,11 +66,15 @@ def url_query(query):
 
     BUFFER_LIST.sort(key=lambda x: (x[1], x[0]), reverse=True)
 
+    ret_urlid_list = []
     print("maybe u wanna search following urls:")
     for i in range(0, min(len(BUFFER_LIST), MAX_RECOMMEND_NUM)):
         print("Rank", i, ": ", URL_ID_DIC[BUFFER_LIST[i][0]], BUFFER_LIST[i][1])
+        ret_urlid_list.append(BUFFER_LIST[i][0])
+    return ret_urlid_list
 
 
+# return a siteidlist
 def site_query(query):
     MAX_CONTENTS_TIMES = 5000
     f = open(CONTENTS_TFIDF_VECTORIZOR_PATH, "rb")
@@ -103,11 +108,11 @@ def site_query(query):
         now_doc_freq_matrix = tfidf_vectorizer.transform(mysitelist)
         contents_vec = np.array((now_doc_freq_matrix.todense().tolist())[0])
 
-        score = np.dot(contents_vec, query_vec) / np.linalg.norm(query_vec, ord=2) / np.linalg.norm(contents_vec, ord=2)
+        score = np.dot(contents_vec, query_vec) / (np.linalg.norm(query_vec, ord=2)+1) / (np.linalg.norm(contents_vec, ord=2)+1)
         if score > 0:
             idscorepairlist.append([urlidlist[i], score])
-        if not (i % 500):
-            print("site:", i, "finish")
+        # if not (i % 500):
+        #     print("site:", i, "finish")
 
     idscorepairlist.sort(key=lambda x: (x[1], x[0]), reverse=True)
 
@@ -115,5 +120,9 @@ def site_query(query):
     f = open(url_id_DICT_PATH, "rb")
     url_id_dict = pkl.load(f)
 
+    ret_urlid_list = []
     for i in range(0, min(len(idscorepairlist), MAX_RECOMMEND_NUM)):
         print("Rank", i, ": ", url_id_dict[idscorepairlist[i][0]], idscorepairlist[i][1])
+        ret_urlid_list.append(idscorepairlist[i][0])
+
+    return ret_urlid_list
