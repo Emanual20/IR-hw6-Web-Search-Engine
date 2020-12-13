@@ -7,6 +7,7 @@ from string import punctuation
 doc_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\doc_id.dict"
 url_id_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_id.dict"
 url_list_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\url_list.dict"
+id_pagerank_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\id_pagerank.dict"
 CONTENTS_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\contents_vectorizor.dict"
 ANCHORS_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\anchors_vectorizor.dict"
 TITLES_TFIDF_VECTORIZOR_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\data_out\\titles_vectorizor.dict"
@@ -41,7 +42,7 @@ def doc_query(query):
 
     idscorepairlist.sort(key=lambda x: (x[1], x[0]), reverse=True)
 
-    print("if u wanna search following files:")
+    print("maybe u wanna search following files:")
     f = open(doc_id_DICT_PATH, "rb")
     doc_id_list = pkl.load(f)
 
@@ -50,7 +51,21 @@ def doc_query(query):
 
 
 def url_query(query):
-    pass
+    f = open(url_id_DICT_PATH, "rb")
+    URL_ID_DIC = pkl.load(f)
+    f = open(id_pagerank_DICT_PATH, "rb")
+    ID_PAGERANK_DIC = pkl.load(f)
+
+    BUFFER_LIST = []
+    for id in ID_PAGERANK_DIC.keys():
+        if query in URL_ID_DIC[id]:
+            BUFFER_LIST.append([id, ID_PAGERANK_DIC[id]])
+
+    BUFFER_LIST.sort(key=lambda x: (x[1], x[0]), reverse=True)
+
+    print("maybe u wanna search following urls:")
+    for i in range(0,min(len(BUFFER_LIST),MAX_RECOMMEND_NUM)):
+        print("Rank", i, ": ", URL_ID_DIC[BUFFER_LIST[i][0]], BUFFER_LIST[i][1])
 
 
 def site_query(query):
