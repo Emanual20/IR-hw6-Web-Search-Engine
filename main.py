@@ -10,6 +10,7 @@ import gentitlesvsm
 import UserMod
 import QueryMod
 import CachedMod
+import RecommendMod
 import pickle as pkl
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -87,6 +88,7 @@ if __name__ == "__main__":
             elif '2' in option:
                 query = input("please input ur query:")
                 url_id_list = QueryMod.url_query(query)
+                RecommendMod.RecommendManager(url_id_list)
                 UserMod.QueryLogManager(NOW_USER_NICKNAME, query)
                 while 1:
                     cache_opt = input("please input the number of the cache you wanna say:(0-9)")
@@ -104,7 +106,8 @@ if __name__ == "__main__":
                 continue
             elif '3' in option:
                 query = input("please input ur query:")
-                url_id_list = QueryMod.site_query(query)
+                url_id_list = QueryMod.site_query(query, NOW_USER_NICKNAME)
+                RecommendMod.RecommendManager(url_id_list)
                 UserMod.QueryLogManager(NOW_USER_NICKNAME, query)
                 while 1:
                     cache_opt = input("please input the number of the cache you wanna say:(0-9/q)")

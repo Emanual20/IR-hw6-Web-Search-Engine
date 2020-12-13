@@ -18,10 +18,13 @@ def display(url_id):
         file_html = open(CACHE_PATH, "rb")
         data = file_html.read()
         conn.sendall(bytes("HTTP/1.1 201 OK\r\n\r\n", "utf-8"))
-        conn.sendall(data)
+        try:
+            conn.sendall(data)
+        except ConnectionAbortedError:
+            break
         conn.close()
         end_time = time.time()
-        if time.localtime(end_time - start_time).tm_sec >= 8:
+        if time.localtime(end_time - start_time).tm_sec >= 5:
             break
         #
         # option = input("input q to quit Cache_Module:")
