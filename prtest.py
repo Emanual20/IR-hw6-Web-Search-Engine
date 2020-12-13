@@ -14,6 +14,7 @@ id_pagerank_DICT_PATH = "M:\\Code Area\\PY\\IR-hw6-Web-Search-Engine\\dataset\\d
 URL_NUM = 23136
 PGRANK_ADJUST_PARAM = 1e4
 
+
 def gen_pagerank():
     f = open(url_list_DICT_PATH, 'rb')
     p = pkl.load(f)
@@ -35,7 +36,7 @@ def gen_pagerank():
     print("calc pagerank finish..")
 
     fdump = open(id_pagerank_DICT_PATH, "wb")
-    pkl.dump(prdic,fdump,0)
+    pkl.dump(prdic, fdump, 0)
     print("write into id_pagerank.dict finish..")
 
     # lis.sort(key=lambda x:(x[1],x[0]),reverse=True)
